@@ -12,7 +12,7 @@ public class Lexer {
             Scanner scanner = new Scanner(inputStream);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                String output = "";
+                StringBuilder output = new StringBuilder();
                 int str = lineCount;
                 int i = 0;
                 while (i < line.length()) {
@@ -24,109 +24,109 @@ public class Lexer {
                     switch (current) {
                         case '!':
                             if (next == '=') {
-                                output = "!=";
+                                output = new StringBuilder("!=");
                                 currentToken = Tokens.NOT_EQUAL;
                                 i++;
                             } else {
-                                output = "!";
+                                output = new StringBuilder("!");
                                 currentToken = Tokens.ERROR;
                             }
                             break;
                         case '=':
                             if (next != '=' && (i != line.length() - 1)) {
-                                output = "=";
+                                output = new StringBuilder("=");
                                 currentToken = Tokens.ASSIGNMENT;
                             } else {
-                                output = "==";
+                                output = new StringBuilder("==");
                                 currentToken = Tokens.COMPARISON;
                                 i++;
                             }
                             break;
                         case '+':
-                            output = "+";
+                            output = new StringBuilder("+");
                             currentToken = Tokens.PLUS;
                             break;
                         case '-':
-                            output = "-";
+                            output = new StringBuilder("-");
                             currentToken = Tokens.MINUS;
                             break;
                         case '*':
-                            output = "*";
+                            output = new StringBuilder("*");
                             currentToken = Tokens.MULTIPLICATION;
                             break;
                         case '/':
                             if (next == '/' && (i != line.length() - 1)) {
-                                output = "//";
+                                output = new StringBuilder("//");
                                 currentToken = Tokens.ONE_LINE_COMMENT;
                             } else if (next == '*') {
-                                output = "/*";
+                                output = new StringBuilder("/*");
                                 currentToken = Tokens.MULTILINE_COMMENT;
                             } else if (i != line.length() - 1 && previous != '*') {
-                                output = "/";
+                                output = new StringBuilder("/");
                                 currentToken = Tokens.DIVISION;
                             }
                             break;
                         case '^':
-                            output = "^";
+                            output = new StringBuilder("^");
                             currentToken = Tokens.EXPONENTIATION;
                             break;
                         case '(':
-                            output = "(";
+                            output = new StringBuilder("(");
                             currentToken = Tokens.BRACKET_OPEN;
                             break;
                         case ')':
-                            output = ")";
+                            output = new StringBuilder(")");
                             currentToken = Tokens.BRACKET_CLOSE;
                             break;
                         case '{':
-                            output = "{";
+                            output = new StringBuilder("{");
                             currentToken = Tokens.BRACE_OPEN;
                             break;
                         case '}':
-                            output = "}";
+                            output = new StringBuilder("}");
                             currentToken = Tokens.BRACE_CLOSE;
                             break;
                         case '.':
-                            output = ".";
+                            output = new StringBuilder(".");
                             currentToken = Tokens.POINT;
                             break;
                         case ',':
-                            output = ",";
+                            output = new StringBuilder(",");
                             currentToken = Tokens.COMMA;
                             break;
                         case ':':
-                            output = ":";
+                            output = new StringBuilder(":");
                             currentToken = Tokens.COLON;
                             break;
                         case ';':
-                            output = ";";
+                            output = new StringBuilder(";");
                             currentToken = Tokens.SEMICOLON;
                             break;
                         case '[':
-                            output = "[";
+                            output = new StringBuilder("[");
                             currentToken = Tokens.SQUARE_BRACKETS_OPEN;
                             break;
                         case ']':
-                            output = "]";
+                            output = new StringBuilder("]");
                             currentToken = Tokens.SQUARE_BRACKETS_CLOSE;
                             break;
                         case '<':
                             if (next == '=') {
-                                output = "<=";
+                                output = new StringBuilder("<=");
                                 currentToken = Tokens.LESS_EQUAL;
                                 i++;
                             } else {
-                                output = "<";
+                                output = new StringBuilder("<");
                                 currentToken = Tokens.SMALLER;
                             }
                             break;
                         case '>':
                             if (next == '=') {
-                                output = ">=";
+                                output = new StringBuilder(">=");
                                 currentToken = Tokens.MORE_EQUAL;
                                 i++;
                             } else {
-                                output = ">";
+                                output = new StringBuilder(">");
                                 currentToken = Tokens.MORE;
                             }
                             break;
@@ -136,7 +136,7 @@ public class Lexer {
                         default:
                             if (current == '"') {
                                 currentToken = Tokens.STRING_PARAM;
-                                String string = Character.toString(current);
+                                StringBuilder string = new StringBuilder(Character.toString(current));
                                 while (next != '"') {
                                     i++;
                                     if (i == line.length()) {
@@ -156,9 +156,9 @@ public class Lexer {
                                     }
                                     current = line.charAt(i);
                                     next = i < line.length() - 1 ? line.charAt(i + 1) : current;
-                                    string += Character.toString(current);
+                                    string.append(current);
                                 }
-                                output = string + '"';
+                                output = new StringBuilder(string.toString() + '"');
                                 i++;
                             } else if (Character.isDigit(current)) {
                                 boolean isInt = true;
@@ -167,7 +167,7 @@ public class Lexer {
                                 boolean isOctal = true;
                                 boolean isHex = false;
                                 boolean isBinary = false;
-                                output = Character.toString(current);
+                                output = new StringBuilder(Character.toString(current));
                                 if (current == '0' && (Character.isDigit(next) || next == 'b' || next == 'B'
                                         || next == 'x' || next == 'X' || next == 'A' || next == 'C'
                                         || next == 'D' || next == 'E' || next == 'F')) {
@@ -204,7 +204,7 @@ public class Lexer {
                                         if (Character.isDigit(current) || current == 'b' || current == 'B' || current == 'x' || current == 'X'
                                                 || current == 'A' || current == 'C'
                                                 || current == 'D' || current == 'E' || current == 'F') {
-                                            output += current;
+                                            output.append(current);
                                         }
                                     }
                                     if (!Character.isDigit(current)) {
@@ -241,7 +241,7 @@ public class Lexer {
                                         }
                                         next = i < line.length() - 1 ? line.charAt(i + 1) : current;
                                         if (Character.isDigit(current) || current == '.' || current == 'E' || current == 'e' || current == '-') {
-                                            output += current;
+                                            output.append(current);
                                         }
                                     }
                                     if (!Character.isDigit(current)) {
@@ -256,10 +256,10 @@ public class Lexer {
                                     }
                                 }
                             } else if (Character.isAlphabetic(current) || current == '_') {
-                                String ident = "";
+                                StringBuilder ident = new StringBuilder();
                                 while (Character.isAlphabetic(current) || current == '_') {
                                     if (Character.isAlphabetic(current) || current == '_' || Character.isDigit(current)) {
-                                        ident += current;
+                                        ident.append(current);
                                         i++;
                                         if (i >= line.length()) {
                                             break;
@@ -271,8 +271,8 @@ public class Lexer {
                                 if (!Character.isAlphabetic(current) && current != '_' && !Character.isDigit(current)) {
                                     i--;
                                 }
-                                output = ident;
-                                switch (ident) {
+                                output = new StringBuilder(ident.toString());
+                                switch (ident.toString()) {
                                     case "private":
                                         currentToken = Tokens.PRIVATE;
                                         break;
@@ -363,7 +363,7 @@ public class Lexer {
                     {
                         try
                         {
-                            parseInt(output);
+                            parseInt(output.toString());
                         }
                         catch (NumberFormatException e)
                         {
